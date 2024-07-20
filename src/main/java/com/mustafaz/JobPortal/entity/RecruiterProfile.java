@@ -1,7 +1,6 @@
 package com.mustafaz.JobPortal.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Builder
@@ -37,4 +36,9 @@ public class RecruiterProfile {
 
     private String state;
 
+    @Transient
+    public String getPhotosImagePath() {
+        if (profilePhoto == null) return null;
+        return "/photos/recruiter/" + userAccountId + "/" + profilePhoto;
+    }
 }

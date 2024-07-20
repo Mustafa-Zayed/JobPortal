@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -40,8 +41,25 @@ public class UsersController {
             return "register";
         }
 
-        usersService.save(user);
-        return "dashboard";
+        Users saved = usersService.save(user);
+
+        // Authenticate the user
+        authenticateUserAndSetSession(saved);
+
+        return "redirect:/dashboard/";
+    }
+
+    private void authenticateUserAndSetSession(Users user) {
+        // Create an authentication token
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+
+        // Set the authentication token in the security context
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+        System.out.println("Authenticated user: " + user.getUsername());
+        System.out.println("Current Authentication: " + SecurityContextHolder.getContext().getAuthentication());
+
     }
 
     @GetMapping("/login")
