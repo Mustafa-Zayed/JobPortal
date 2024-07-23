@@ -32,6 +32,12 @@ public class JobPostActivity {
     @JoinColumn(name = "job_company_id")
     private JobCompany jobCompanyId;
 
+    @Transient
+    private Boolean isActive;
+
+    @Transient
+    private Boolean isSaved;
+
     @Length(max = 10000)
     private String descriptionOfJob;
 
