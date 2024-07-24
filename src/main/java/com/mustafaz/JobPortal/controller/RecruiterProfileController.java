@@ -76,7 +76,7 @@ public class RecruiterProfileController {
         try {
             // Read the profile image from the request, the multipart file.
             // And then we save that image on the server and that directory.
-            FileUploadUtil.saveFile(uploadDir, multipartFile.getOriginalFilename(), multipartFile);
+            FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
         } catch (IOException e) {
             e.printStackTrace();
         }

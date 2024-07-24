@@ -17,6 +17,7 @@ public class JobSeekerApplyController {
     private final JobPostActivityService jobPostActivityService;
     private final UsersService usersService;
 
+    // When clicking on a job in dashboard page.
     @GetMapping("/job-details-apply/{id}")
     public String displayJob(@PathVariable Integer id, Model model) {
 

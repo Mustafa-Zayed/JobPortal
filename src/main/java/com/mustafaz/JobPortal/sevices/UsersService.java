@@ -54,27 +54,20 @@ public class UsersService implements UserDetailsService {
 
 
     public Object getCurrentUserProfile() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) { // AnonymousAuthenticationToken is a special token used by Spring Security to represent an anonymous (not logged-in) user. We ensure that only authenticated users’ names are processed and added to the model
-            String name = authentication.getName();
 
-            Users users = usersRepository.findByEmail(name).orElseThrow
-                    (() -> new UsernameNotFoundException("User not found with email: " + name));
-            Integer id = users.getUserTypeId().getUserTypeId();
+        Users users = getCurrentUser();
+        Integer id = users.getUserTypeId().getUserTypeId();
 
-            if (id == 1)
-                return recruiterProfileRepository.findById(users.getUserId()).orElse(new RecruiterProfile());
-            else
-                return jobSeekerProfileRepository.findById(users.getUserId()).orElse(new JobSeekerProfile());
-        }
-        
-        return null;
+        if (id == 1)
+            return recruiterProfileRepository.findById(users.getUserId()).orElse(new RecruiterProfile());
+        else
+            return jobSeekerProfileRepository.findById(users.getUserId()).orElse(new JobSeekerProfile());
     }
 
     public Users getCurrentUser() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+        if (!(authentication instanceof AnonymousAuthenticationToken)) { // AnonymousAuthenticationToken is a special token used by Spring Security to represent an anonymous (not logged-in) user. We ensure that only authenticated users’ names are processed and added to the model.
             String username = authentication.getName();
 
             return usersRepository.findByEmail(username).orElseThrow(

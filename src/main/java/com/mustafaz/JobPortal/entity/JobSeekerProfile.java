@@ -1,10 +1,8 @@
 package com.mustafaz.JobPortal.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -25,6 +23,10 @@ public class JobSeekerProfile {
     @JoinColumn(name = "user_account_id")
     private Users users;
 
+    @OneToMany(mappedBy = "jobSeekerProfile", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<Skills> skills;
+
     private String city;
 
     private String country;
@@ -44,7 +46,9 @@ public class JobSeekerProfile {
 
     private String workAuthorization;
 
-    @OneToMany(mappedBy = "jobSeekerProfile", cascade = CascadeType.ALL)
-    private List<Skills> skills;
-
+    @Transient
+    public String getPhotosImagePath() {
+        if (profilePhoto == null || userAccountId == null) return null;
+        return "/photos/candidate/" + userAccountId + "/" + profilePhoto;
+    }
 }
