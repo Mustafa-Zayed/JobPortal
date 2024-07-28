@@ -32,6 +32,10 @@ public class JobPostActivity {
     @JoinColumn(name = "job_company_id")
     private JobCompany jobCompanyId;
 
+//    @ToString.Exclude
+//    @ManyToMany(mappedBy = "jobPostActivities")
+//    private List<JobSeekerProfile> jobSeekerProfiles;
+
     @Transient
     private Boolean isActive;
 

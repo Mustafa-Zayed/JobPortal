@@ -27,6 +27,15 @@ public class JobSeekerProfile {
     @ToString.Exclude
     private List<Skills> skills;
 
+//    @ToString.Exclude
+//    @ManyToMany
+//    @JoinTable(
+//            name = "job_seeker_apply",
+//            joinColumns = @JoinColumn(name = "user_id"),
+//            inverseJoinColumns = @JoinColumn(name = "job")
+//    )
+//    private List<JobPostActivity> jobPostActivities;
+
     private String city;
 
     private String country;

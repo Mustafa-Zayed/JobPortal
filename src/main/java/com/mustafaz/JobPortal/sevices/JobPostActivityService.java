@@ -5,8 +5,10 @@ import com.mustafaz.JobPortal.repository.JobPostActivityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -57,4 +59,18 @@ public class JobPostActivityService {
     public Optional<JobPostActivity> getJobPostActivityById(int jobPostId) {
         return repository.findById(jobPostId);
     }
+
+    public List<JobPostActivity> getAll() {
+        return repository.findAll();
+    }
+
+    public List<JobPostActivity> search(String job, String location, List<String> remote,
+                                        List<String> type, LocalDate searchDate) {
+
+        return  (Objects.isNull(searchDate)) ?
+            repository.searchWithoutDate(job, location, remote, type)
+        :
+            repository.search(job, location, remote, type, searchDate);
+    }
+
 }
