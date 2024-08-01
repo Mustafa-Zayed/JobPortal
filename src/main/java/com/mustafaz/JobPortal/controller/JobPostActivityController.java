@@ -38,6 +38,7 @@ public class JobPostActivityController {
             @RequestParam(name = "partTime", required = false) String partTime,
             @RequestParam(name = "fullTime", required = false) String fullTime,
             @RequestParam(name = "freelance", required = false) String freelance,
+            @RequestParam(name = "internship", required = false) String internship,
             @RequestParam(name = "remoteOnly", required = false) String remoteOnly,
             @RequestParam(name = "officeOnly", required = false) String officeOnly,
             @RequestParam(name = "partialRemote", required = false) String partialRemote,
@@ -52,6 +53,7 @@ public class JobPostActivityController {
         model.addAttribute("partTime", partTime);
         model.addAttribute("fullTime", fullTime);
         model.addAttribute("freelance", freelance);
+        model.addAttribute("internship", internship);
 
         model.addAttribute("remoteOnly", remoteOnly);
         model.addAttribute("officeOnly", officeOnly);
@@ -80,10 +82,11 @@ public class JobPostActivityController {
         }
 
         // in case these values didn't come in, we'll set in the appropriate defaults accordingly.
-        if (fullTime == null && partTime == null && freelance == null) {
+        if (fullTime == null && partTime == null && freelance == null && internship == null) {
             partTime = "Part-Time";
             fullTime = "Full-Time";
             freelance = "Freelance";
+            internship = "Internship";
             remoteFlag = false;
         }
 
@@ -103,8 +106,8 @@ public class JobPostActivityController {
 
             // otherwise, we'll search for jobs based on the appropriate flags
             searchedJobList = jobPostActivityService.search(job, location,
-                    Arrays.asList(partTime, fullTime, freelance),
                     Arrays.asList(officeOnly, remoteOnly, partialRemote),
+                    Arrays.asList(partTime, fullTime, freelance, internship),
                     searchDate);
         }
 
@@ -190,6 +193,7 @@ public class JobPostActivityController {
         return "add-jobs";
     }
 
+    // When clicking on Save button in add-jobs page.
     @PostMapping("/dashboard/addNew")
     public String saveNewJob(@ModelAttribute JobPostActivity jobPostActivity){
 
@@ -205,6 +209,7 @@ public class JobPostActivityController {
         return "redirect:/dashboard/";
     }
 
+    // When clicking on Edit Job button in job-details page.
     @PostMapping("/dashboard/edit/{id}")
     public String editJob(@PathVariable Integer id, Model model){
 

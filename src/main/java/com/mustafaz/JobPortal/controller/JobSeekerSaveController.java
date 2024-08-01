@@ -37,6 +37,10 @@ public class JobSeekerSaveController {
         jobSeekerSave.setJobSeekerProfile(jobSeekerProfile);
         jobSeekerSave.setJobPostActivity(jobPostActivity);
 
+        // It's not mandatory as isSaved is marked as @Transient  so it will not saved in database. For saving
+        // which job is saved or applied by user , here we have entity class JobSeekerApply and JobSeekerSave.
+        // so we would set this feature after fetching from the DB and before displaying in the dashboard.
+        // jobPostActivity.setIsSaved(true);
 
         jobSeekerSaveService.save(jobSeekerSave);
 

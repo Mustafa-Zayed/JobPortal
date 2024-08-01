@@ -97,6 +97,11 @@ public class JobSeekerApplyController {
         jobSeekerApply.setJobPostActivity(jobPostActivity);
         jobSeekerApply.setApplyDate(new Date());
 
+        // It's not mandatory as isActive is marked as @Transient  so it will not saved in database. For saving
+        // which job is saved or applied by user , here we have entity class JobSeekerApply and JobSeekerSave.
+        // so we would set this feature after fetching from the DB and before displaying in the dashboard.
+        // jobPostActivity.setIsActive(true);
+
         jobSeekerApplyService.save(jobSeekerApply);
 
         return "redirect:/dashboard/";

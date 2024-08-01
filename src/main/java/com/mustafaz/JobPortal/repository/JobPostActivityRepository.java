@@ -33,10 +33,10 @@ public interface JobPostActivityRepository extends JpaRepository<JobPostActivity
     List<IRecruiterJobs> getRecruiterJobs(@Param("recruiter") int recruiter);
 
     @Query(value = "SELECT * FROM job_post_activity j INNER JOIN job_location l on " +
-            "j.job_location_id=l.id  WHERE j.job_title LIKE %:job%"
-            + " AND (l.city LIKE %:location%"
-            + " OR l.country LIKE %:location%"
-            + " OR l.state LIKE %:location%) " +
+            "j.job_location_id=l.id  WHERE j.job_title LIKE CONCAT('%', :job, '%')"
+            + " AND (l.city LIKE CONCAT('%', :location, '%')"
+            + " OR l.country LIKE CONCAT('%', :location, '%')"
+            + " OR l.state LIKE CONCAT('%', :location, '%')) " +
             " AND (j.job_type IN(:type)) " +
             " AND (j.remote IN(:remote)) ", nativeQuery = true)
     List<JobPostActivity> searchWithoutDate(@Param("job") String job,
@@ -46,10 +46,10 @@ public interface JobPostActivityRepository extends JpaRepository<JobPostActivity
 
 
     @Query(value = "SELECT * FROM job_post_activity j INNER JOIN job_location l on " +
-            "j.job_location_id=l.id  WHERE j.job_title LIKE %:job%"
-            + " AND (l.city LIKE %:location%"
-            + " OR l.country LIKE %:location%"
-            + " OR l.state LIKE %:location%) " +
+            "j.job_location_id=l.id  WHERE j.job_title LIKE CONCAT('%', :job, '%')"
+            + " AND (l.city LIKE CONCAT('%', :location, '%')"
+            + " OR l.country LIKE CONCAT('%', :location, '%')"
+            + " OR l.state LIKE CONCAT('%', :location, '%')) " +
             " AND (j.job_type IN(:type)) " +
             " AND (j.remote IN(:remote)) " +
             " AND (posted_date >= :date)", nativeQuery = true)
