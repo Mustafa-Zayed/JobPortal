@@ -47,69 +47,12 @@ public class JobPostActivityController {
             @RequestParam(name = "days30", required = false) boolean days30
     ) {
 
-        model.addAttribute("job", job);
-        model.addAttribute("location", location);
-
-        model.addAttribute("partTime", partTime);
-        model.addAttribute("fullTime", fullTime);
-        model.addAttribute("freelance", freelance);
-        model.addAttribute("internship", internship);
-
-        model.addAttribute("remoteOnly", remoteOnly);
-        model.addAttribute("officeOnly", officeOnly);
-        model.addAttribute("partialRemote", partialRemote);
-
-        model.addAttribute("today", today);
-        model.addAttribute("days7", days7);
-        model.addAttribute("days30", days30);
-
-        LocalDate searchDate = null;
-        List<JobPostActivity> searchedJobList;
-
-        // boolean flags to know if we need to search by date, remote or the type of job accordingly.
-        boolean dateSearchFlag = true;
-        boolean remoteFlag = true;
-        boolean typeFlag = true;
-
-        if (today){
-            searchDate = LocalDate.now();
-        } else if (days7) {
-            searchDate = LocalDate.now().minusDays(7);
-        } else if (days30) {
-            searchDate = LocalDate.now().minusDays(30);
-        } else {
-            dateSearchFlag = false;
-        }
-
-        // in case these values didn't come in, we'll set in the appropriate defaults accordingly.
-        if (fullTime == null && partTime == null && freelance == null && internship == null) {
-            partTime = "Part-Time";
-            fullTime = "Full-Time";
-            freelance = "Freelance";
-            internship = "Internship";
-            remoteFlag = false;
-        }
-
-        if (officeOnly == null && remoteOnly == null && partialRemote == null) {
-            officeOnly = "Office-Only";
-            remoteOnly = "Remote-Only";
-            partialRemote = "Partial-Remote";
-            typeFlag = false;
-        }
-
-        // if we don't have any of the flags selected, we'll get all jobs.
-        if (!dateSearchFlag && !remoteFlag && !typeFlag && !StringUtils.hasText(job)
-                && !StringUtils.hasText(location)) {
-
-            searchedJobList = jobPostActivityService.getAll();
-        } else {
-
-            // otherwise, we'll search for jobs based on the appropriate flags
-            searchedJobList = jobPostActivityService.search(job, location,
-                    Arrays.asList(officeOnly, remoteOnly, partialRemote),
-                    Arrays.asList(partTime, fullTime, freelance, internship),
-                    searchDate);
-        }
+        List<JobPostActivity> searchedJobList = getSearchedJobList(
+                model, job,
+                location, partTime, fullTime, freelance, internship,
+                remoteOnly, officeOnly, partialRemote,
+                today, days7, days30
+        );
 
         Object currentUserProfile = usersService.getCurrentUserProfile();
         model.addAttribute("user",currentUserProfile);
@@ -181,6 +124,117 @@ public class JobPostActivityController {
         }
         return "dashboard";
 //        return "dashboardTest";
+    }
+
+    @GetMapping("/global-search/")
+    public String globalSearch(
+            Model model,
+            @RequestParam(name = "job", required = false) String job,
+            @RequestParam(name = "location", required = false) String location,
+
+            @RequestParam(name = "partTime", required = false) String partTime,
+            @RequestParam(name = "fullTime", required = false) String fullTime,
+            @RequestParam(name = "freelance", required = false) String freelance,
+            @RequestParam(name = "internship", required = false) String internship,
+            @RequestParam(name = "remoteOnly", required = false) String remoteOnly,
+            @RequestParam(name = "officeOnly", required = false) String officeOnly,
+            @RequestParam(name = "partialRemote", required = false) String partialRemote,
+            @RequestParam(name = "today", required = false) boolean today,
+            @RequestParam(name = "days7", required = false) boolean days7,
+            @RequestParam(name = "days30", required = false) boolean days30
+    ) {
+
+        List<JobPostActivity> searchedJobList = getSearchedJobList(
+                model, job,
+                location, partTime, fullTime, freelance, internship,
+                remoteOnly, officeOnly, partialRemote,
+                today, days7, days30
+        );
+
+        model.addAttribute("jobPost", searchedJobList);
+        return "global-search";
+    }
+
+    private List<JobPostActivity> getSearchedJobList(
+            Model model,
+            String job,
+            String location,
+            String partTime,
+            String fullTime,
+            String freelance,
+            String internship,
+            String remoteOnly,
+            String officeOnly,
+            String partialRemote,
+            boolean today,
+            boolean days7,
+            boolean days30
+    ) {
+
+        model.addAttribute("job", job);
+        model.addAttribute("location", location);
+
+        model.addAttribute("partTime", partTime);
+        model.addAttribute("fullTime", fullTime);
+        model.addAttribute("freelance", freelance);
+        model.addAttribute("internship", internship);
+
+        model.addAttribute("remoteOnly", remoteOnly);
+        model.addAttribute("officeOnly", officeOnly);
+        model.addAttribute("partialRemote", partialRemote);
+
+        model.addAttribute("today", today);
+        model.addAttribute("days7", days7);
+        model.addAttribute("days30", days30);
+
+        LocalDate searchDate = null;
+        List<JobPostActivity> searchedJobList;
+
+        // boolean flags to know if we need to search by date, remote or the type of job accordingly.
+        boolean dateSearchFlag = true;
+        boolean remoteFlag = true;
+        boolean typeFlag = true;
+
+        if (today){
+            searchDate = LocalDate.now();
+        } else if (days7) {
+            searchDate = LocalDate.now().minusDays(7);
+        } else if (days30) {
+            searchDate = LocalDate.now().minusDays(30);
+        } else {
+            dateSearchFlag = false;
+        }
+
+        // in case these values didn't come in, we'll set in the appropriate defaults accordingly.
+        if (fullTime == null && partTime == null && freelance == null && internship == null) {
+            partTime = "Part-Time";
+            fullTime = "Full-Time";
+            freelance = "Freelance";
+            internship = "Internship";
+            remoteFlag = false;
+        }
+
+        if (officeOnly == null && remoteOnly == null && partialRemote == null) {
+            officeOnly = "Office-Only";
+            remoteOnly = "Remote-Only";
+            partialRemote = "Partial-Remote";
+            typeFlag = false;
+        }
+
+        // if we don't have any of the flags selected, we'll get all jobs.
+        if (!dateSearchFlag && !remoteFlag && !typeFlag && !StringUtils.hasText(job)
+                && !StringUtils.hasText(location)) {
+
+            searchedJobList = jobPostActivityService.getAll();
+        } else {
+
+            // otherwise, we'll search for jobs based on the appropriate flags
+            searchedJobList = jobPostActivityService.search(job, location,
+                    Arrays.asList(officeOnly, remoteOnly, partialRemote),
+                    Arrays.asList(partTime, fullTime, freelance, internship),
+                    searchDate);
+        }
+        return searchedJobList;
     }
 
     // Post New Job button in the dashboard page
